@@ -92,90 +92,92 @@ function LoginPage() {
       {/* Right — form */}
       <main className="relative col-span-1 flex items-center justify-center bg-background px-6 py-10 lg:col-span-2">
         <div className="absolute inset-x-0 top-0 h-1 bg-gradient-orange lg:hidden" />
-        <div className="w-full max-w-sm">
+        <div className="w-full max-w-md">
           <div className="mb-8 lg:hidden"><CasLogo /></div>
 
-          <div className="mb-7">
-            <h2 className="font-display text-2xl font-bold tracking-tight">Welcome back</h2>
-            <p className="mt-1.5 text-sm text-muted-foreground">
-              Sign in to the CAS Maintenance Operations console.
-            </p>
-          </div>
-
-          <form onSubmit={onSubmit} noValidate className="space-y-4">
-            <Field
-              label="Email address"
-              icon={<Mail className="h-4 w-4" />}
-              error={errors.email}
-            >
-              <input
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="engineer@cas.aero"
-                className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground/60"
-              />
-            </Field>
-
-            <Field
-              label="Password"
-              icon={<Lock className="h-4 w-4" />}
-              error={errors.password}
-              trailing={
-                <button
-                  type="button"
-                  onClick={() => setShowPwd((s) => !s)}
-                  className="text-muted-foreground hover:text-foreground"
-                  aria-label={showPwd ? "Hide password" : "Show password"}
-                >
-                  {showPwd ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
-              }
-            >
-              <input
-                type={showPwd ? "text" : "password"}
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground/60"
-              />
-            </Field>
-
-            <div className="flex items-center justify-between pt-1">
-              <label className="flex cursor-pointer items-center gap-2 text-sm text-foreground/80">
-                <input
-                  type="checkbox"
-                  checked={remember}
-                  onChange={(e) => setRemember(e.target.checked)}
-                  className="h-4 w-4 rounded border-border text-accent accent-[color:var(--accent)]"
-                />
-                Remember me
-              </label>
-              <Link to="/" className="text-sm font-medium text-accent hover:underline">
-                Forgot password?
-              </Link>
+          <div className="rounded-2xl border border-border/60 bg-card p-8 shadow-elevated lg:p-10">
+            <div className="mb-7">
+              <h2 className="font-display text-2xl font-bold tracking-tight">Welcome back</h2>
+              <p className="mt-1.5 text-sm text-muted-foreground">
+                Sign in to the CAS Maintenance Operations console.
+              </p>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-md bg-gradient-orange font-semibold text-white shadow-elevated transition hover:brightness-110 disabled:opacity-70"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" /> Signing in…
-                </>
-              ) : (
-                "Sign in to console"
-              )}
-            </button>
+            <form onSubmit={onSubmit} noValidate className="space-y-4">
+              <Field
+                label="Email address"
+                icon={<Mail className="h-4 w-4" />}
+                error={errors.email}
+              >
+                <input
+                  type="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="engineer@cas.aero"
+                  className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground/60"
+                />
+              </Field>
 
-            <p className="pt-4 text-center text-xs text-muted-foreground">
-              Protected access · Authorized personnel only
-            </p>
-          </form>
+              <Field
+                label="Password"
+                icon={<Lock className="h-4 w-4" />}
+                error={errors.password}
+                trailing={
+                  <button
+                    type="button"
+                    onClick={() => setShowPwd((s) => !s)}
+                    className="text-muted-foreground hover:text-foreground"
+                    aria-label={showPwd ? "Hide password" : "Show password"}
+                  >
+                    {showPwd ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                }
+              >
+                <input
+                  type={showPwd ? "text" : "password"}
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground/60"
+                />
+              </Field>
+
+              <div className="flex items-center justify-between pt-1">
+                <label className="flex cursor-pointer items-center gap-2 text-sm text-foreground/80">
+                  <input
+                    type="checkbox"
+                    checked={remember}
+                    onChange={(e) => setRemember(e.target.checked)}
+                    className="h-4 w-4 rounded border-border text-accent accent-[color:var(--accent)]"
+                  />
+                  Remember me
+                </label>
+                <Link to="/" className="text-sm font-medium text-accent hover:underline">
+                  Forgot password?
+                </Link>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-md bg-gradient-orange font-semibold text-white shadow-elevated transition hover:brightness-110 disabled:opacity-70"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" /> Signing in…
+                  </>
+                ) : (
+                  "Sign in to console"
+                )}
+              </button>
+
+              <p className="pt-4 text-center text-xs text-muted-foreground">
+                Protected access · Authorized personnel only
+              </p>
+            </form>
+          </div>
 
           <p className="mt-10 text-center text-xs text-muted-foreground lg:hidden">
             © 2026 Central Aviation Service (CAS)
