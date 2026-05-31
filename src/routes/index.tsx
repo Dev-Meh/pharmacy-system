@@ -38,18 +38,21 @@ function LoginPage() {
   };
 
   return (
-    <div className="grid min-h-screen lg:grid-cols-5">
-      {/* Left — hero */}
-      <aside className="relative hidden overflow-hidden lg:col-span-3 lg:block">
+    <div className="relative grid min-h-screen lg:grid-cols-5">
+      {/* Full-screen background */}
+      <div className="absolute inset-0">
         <img
           src={hangar}
           alt="CAS aircraft maintenance engineers inspecting a commercial jet engine in a hangar"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-br from-primary/85 via-primary/70 to-primary/40" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+      </div>
 
-        <div className="relative z-10 flex h-full flex-col justify-between p-10 xl:p-14">
+      {/* Left — hero content */}
+      <aside className="relative z-10 hidden overflow-hidden lg:col-span-3 lg:block">
+        <div className="flex h-full flex-col justify-between p-10 xl:p-14">
           <div className="flex items-center justify-between">
             <CasLogo light />
             <div className="flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 backdrop-blur">
@@ -90,7 +93,7 @@ function LoginPage() {
       </aside>
 
       {/* Right — form */}
-      <main className="relative col-span-1 flex items-center justify-center bg-background px-6 py-10 lg:col-span-2">
+      <main className="relative z-10 col-span-1 flex items-center justify-center px-6 py-10 lg:col-span-2">
         <div className="absolute inset-x-0 top-0 h-1 bg-gradient-orange lg:hidden" />
         <div className="w-full max-w-md">
           <div className="mb-8 lg:hidden"><CasLogo /></div>
