@@ -29,18 +29,7 @@ function Home() {
   return (
     <>
       {/* HERO */}
-      <section className="relative h-screen min-h-[640px] w-full overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src={hero}
-            alt="African congregation worshipping with raised hands inside a sunlit church"
-            className="h-full w-full object-cover animate-slow-zoom"
-            width={1920}
-            height={1280}
-          />
-          <div className="absolute inset-0 bg-gradient-hero" />
-          <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent" />
-        </div>
+      <HeroSlideshow />
 
         <div className="relative z-10 mx-auto flex h-full max-w-5xl flex-col items-center justify-center px-6 text-center text-white">
           <span className="animate-float-up rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.22em] backdrop-blur">
