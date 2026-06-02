@@ -1,220 +1,133 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
-import { Eye, EyeOff, Loader2, Mail, Lock, ShieldCheck } from "lucide-react";
-import hangar from "@/assets/hangar.jpg";
-import { CasLogo } from "@/components/cas/Logo";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight, HeartHandshake, Sparkles, Users } from "lucide-react";
+import hero from "@/assets/worship-hero.jpg";
+import choir from "@/assets/choir.jpg";
+import bible from "@/assets/bible.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Sign in — Central Aviation Service (CAS)" },
-      { name: "description", content: "Secure sign-in to the CAS Aircraft Maintenance Management System." },
+      { title: "PHM-ARCC Iyumbu Church — A Place of Faith, Hope and Worship" },
+      { name: "description", content: "Welcome to PHM-ARCC Iyumbu Church. Join us in worship, prayer and Christian fellowship." },
+      { property: "og:title", content: "PHM-ARCC Iyumbu Church" },
+      { property: "og:description", content: "A Place of Faith, Hope and Worship." },
     ],
   }),
-  component: LoginPage,
+  component: Home,
 });
 
-function LoginPage() {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPwd, setShowPwd] = useState(false);
-  const [remember, setRemember] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string; form?: string }>({});
-
-  const onSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    const next: typeof errors = {};
-    if (!email.trim()) next.email = "Email address is required.";
-    else if (!/^\S+@\S+\.\S+$/.test(email)) next.email = "Enter a valid email address.";
-    if (!password) next.password = "Password is required.";
-    setErrors(next);
-    if (Object.keys(next).length) return;
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 900));
-    setLoading(false);
-    navigate({ to: "/dashboard" });
-  };
-
+function Home() {
   return (
-    <div className="relative grid min-h-screen lg:grid-cols-5">
-      {/* Full-screen background */}
-      <div className="absolute inset-0">
-        <img
-          src={hangar}
-          alt="CAS aircraft maintenance engineers inspecting a commercial jet engine in a hangar"
-          className="h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/85 via-primary/70 to-primary/40" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-      </div>
-
-      {/* Left — hero content */}
-      <aside className="relative z-10 hidden overflow-hidden lg:col-span-3 lg:block">
-        <div className="flex h-full flex-col justify-between p-10 xl:p-14">
-          <div className="flex items-center justify-between">
-            <CasLogo light />
-            <div className="flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 backdrop-blur">
-              <ShieldCheck className="h-3.5 w-3.5 text-white" />
-              <span className="text-[11px] font-medium uppercase tracking-wider text-white/90">EASA · FAA Compliant</span>
-            </div>
-          </div>
-
-          <div className="max-w-xl text-white">
-            <div className="mb-3 inline-block rounded-full bg-accent/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white">
-              Central Aviation Service
-            </div>
-            <h1 className="font-display text-4xl font-extrabold leading-tight xl:text-5xl">
-              Excellence in Aircraft Maintenance &amp; Engineering Solutions
-            </h1>
-            <p className="mt-5 max-w-lg text-sm leading-relaxed text-white/85 xl:text-base">
-              Manage aircraft maintenance, inspections, work orders, inventory and
-              compliance from one centralized platform — built for airlines, MROs and
-              aviation engineering teams.
-            </p>
-
-            <dl className="mt-8 grid grid-cols-3 gap-6 border-t border-white/15 pt-6">
-              {[
-                ["240+", "Aircraft serviced"],
-                ["99.2%", "On-time release"],
-                ["24/7", "Hangar operations"],
-              ].map(([v, l]) => (
-                <div key={l}>
-                  <dt className="font-display text-2xl font-bold text-white">{v}</dt>
-                  <dd className="text-[11px] uppercase tracking-wider text-white/70">{l}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-
-          <p className="text-xs text-white/60">© 2026 Central Aviation Service (CAS). All rights reserved.</p>
+    <>
+      {/* HERO */}
+      <section className="relative h-screen min-h-[640px] w-full overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src={hero}
+            alt="African congregation worshipping with raised hands inside a sunlit church"
+            className="h-full w-full object-cover animate-slow-zoom"
+            width={1920}
+            height={1280}
+          />
+          <div className="absolute inset-0 bg-gradient-hero" />
+          <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent" />
         </div>
-      </aside>
 
-      {/* Right — form */}
-      <main className="relative z-10 col-span-1 flex items-center justify-center px-6 py-10 lg:col-span-2">
-        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-orange lg:hidden" />
-        <div className="w-full max-w-md">
-          <div className="mb-8 lg:hidden"><CasLogo /></div>
-
-          <div className="rounded-2xl border border-border/60 bg-card p-8 shadow-elevated lg:p-10">
-            <div className="mb-7">
-              <h2 className="font-display text-2xl font-bold tracking-tight">Welcome back</h2>
-              <p className="mt-1.5 text-sm text-muted-foreground">
-                Sign in to the CAS Maintenance Operations console.
-              </p>
-            </div>
-
-            <form onSubmit={onSubmit} noValidate className="space-y-4">
-              <Field
-                label="Email address"
-                icon={<Mail className="h-4 w-4" />}
-                error={errors.email}
-              >
-                <input
-                  type="email"
-                  autoComplete="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="engineer@cas.aero"
-                  className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground/60"
-                />
-              </Field>
-
-              <Field
-                label="Password"
-                icon={<Lock className="h-4 w-4" />}
-                error={errors.password}
-                trailing={
-                  <button
-                    type="button"
-                    onClick={() => setShowPwd((s) => !s)}
-                    className="text-muted-foreground hover:text-foreground"
-                    aria-label={showPwd ? "Hide password" : "Show password"}
-                  >
-                    {showPwd ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                }
-              >
-                <input
-                  type={showPwd ? "text" : "password"}
-                  autoComplete="current-password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground/60"
-                />
-              </Field>
-
-              <div className="flex items-center justify-between pt-1">
-                <label className="flex cursor-pointer items-center gap-2 text-sm text-foreground/80">
-                  <input
-                    type="checkbox"
-                    checked={remember}
-                    onChange={(e) => setRemember(e.target.checked)}
-                    className="h-4 w-4 rounded border-border text-accent accent-[color:var(--accent)]"
-                  />
-                  Remember me
-                </label>
-                <Link to="/" className="text-sm font-medium text-accent hover:underline">
-                  Forgot password?
-                </Link>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-md bg-gradient-orange font-semibold text-white shadow-elevated transition hover:brightness-110 disabled:opacity-70"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" /> Signing in…
-                  </>
-                ) : (
-                  "Sign in to console"
-                )}
-              </button>
-
-              <p className="pt-4 text-center text-xs text-muted-foreground">
-                Protected access · Authorized personnel only
-              </p>
-            </form>
-          </div>
-
-          <p className="mt-10 text-center text-xs text-muted-foreground lg:hidden">
-            © 2026 Central Aviation Service (CAS)
+        <div className="relative z-10 mx-auto flex h-full max-w-5xl flex-col items-center justify-center px-6 text-center text-white">
+          <span className="animate-float-up rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.22em] backdrop-blur">
+            ✦ PHM-ARCC Iyumbu Church ✦
+          </span>
+          <h1 className="mt-6 animate-float-up font-display text-4xl leading-[1.1] sm:text-5xl md:text-6xl lg:text-7xl" style={{ animationDelay: "0.15s" }}>
+            Welcome to a Place of <span className="text-gold italic">Faith, Hope</span> and Worship
+          </h1>
+          <p className="mt-6 max-w-2xl animate-float-up text-base text-white/85 sm:text-lg" style={{ animationDelay: "0.3s" }}>
+            “Trust in the Lord with all your heart, and lean not on your own understanding;<br className="hidden md:block" /> in all your ways acknowledge Him, and He shall direct your paths.” — Proverbs 3:5–6
           </p>
+          <div className="mt-10 flex animate-float-up flex-wrap items-center justify-center gap-3" style={{ animationDelay: "0.45s" }}>
+            <Link to="/events" className="group inline-flex items-center gap-2 rounded-full bg-gradient-gold px-7 py-3.5 text-sm font-semibold text-primary shadow-warm transition hover:scale-[1.03]">
+              Join Us in Worship
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+            <Link to="/about" className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/5 px-7 py-3.5 text-sm font-medium text-white backdrop-blur transition hover:bg-white/15">
+              Our Story
+            </Link>
+          </div>
         </div>
-      </main>
-    </div>
-  );
-}
 
-function Field({
-  label, icon, error, trailing, children,
-}: {
-  label: string;
-  icon: React.ReactNode;
-  error?: string;
-  trailing?: React.ReactNode;
-  children: React.ReactNode;
-}) {
-  return (
-    <div>
-      <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-muted-foreground">
-        {label}
-      </label>
-      <div
-        className={`flex h-11 items-center gap-2.5 rounded-md border bg-card px-3 transition focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/20 ${
-          error ? "border-destructive/60" : "border-border"
-        }`}
-      >
-        <span className="text-muted-foreground">{icon}</span>
-        {children}
-        {trailing}
-      </div>
-      {error && <p className="mt-1.5 text-xs font-medium text-destructive">{error}</p>}
-    </div>
+        {/* scroll cue */}
+        <div className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-white/70">
+          <div className="mx-auto h-10 w-6 rounded-full border-2 border-white/40 p-1">
+            <div className="mx-auto h-2 w-1 animate-bounce rounded-full bg-white/80" />
+          </div>
+        </div>
+      </section>
+
+      {/* PILLARS */}
+      <section className="bg-background px-6 py-24 lg:px-10">
+        <div className="mx-auto max-w-6xl">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-earth">Our calling</p>
+            <h2 className="mt-3 font-display text-4xl text-primary md:text-5xl">Built on faith. Bound by love.</h2>
+            <p className="mt-4 text-muted-foreground">
+              We are a vibrant African congregation rooted in scripture, devoted to prayer and committed to the people of Iyumbu.
+            </p>
+          </div>
+
+          <div className="mt-14 grid gap-6 md:grid-cols-3">
+            {[
+              { icon: Sparkles, title: "Spiritual Growth", body: "Bible study, discipleship and Spirit-led teaching every week." },
+              { icon: Users, title: "Loving Community", body: "A welcoming family across generations, tribes and tongues." },
+              { icon: HeartHandshake, title: "Outreach & Mercy", body: "Serving widows, orphans and our neighbours in Iyumbu." },
+            ].map(({ icon: Icon, title, body }) => (
+              <div key={title} className="group rounded-2xl border border-border bg-card p-8 shadow-soft transition hover:-translate-y-1 hover:shadow-warm">
+                <div className="grid h-12 w-12 place-items-center rounded-xl bg-gradient-gold text-primary">
+                  <Icon className="h-5 w-5" />
+                </div>
+                <h3 className="mt-5 font-display text-2xl text-primary">{title}</h3>
+                <p className="mt-2 text-sm text-muted-foreground">{body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SPLIT */}
+      <section className="bg-secondary/40 px-6 py-24 lg:px-10">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
+          <div className="relative overflow-hidden rounded-3xl shadow-warm">
+            <img src={choir} alt="Joyful African church choir in traditional robes" className="h-full w-full object-cover" loading="lazy" width={1400} height={1000} />
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-earth">Sundays at PHM-ARCC</p>
+            <h2 className="mt-3 font-display text-4xl text-primary md:text-5xl">Come and worship with us.</h2>
+            <p className="mt-5 text-muted-foreground">
+              From the rising of the sun to its going down, the name of the Lord is to be praised. Whether you are visiting Iyumbu or searching for a spiritual home, our doors — and our hearts — are open.
+            </p>
+            <ul className="mt-6 space-y-3 text-sm">
+              <li className="flex items-center gap-3"><span className="h-2 w-2 rounded-full bg-gold" /> Sunday Worship Service · 9:00 AM</li>
+              <li className="flex items-center gap-3"><span className="h-2 w-2 rounded-full bg-gold" /> Midweek Prayer · Wednesday 6:00 PM</li>
+              <li className="flex items-center gap-3"><span className="h-2 w-2 rounded-full bg-gold" /> Youth Fellowship · Friday 5:00 PM</li>
+            </ul>
+            <Link to="/events" className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90">
+              See all events <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* VERSE BANNER */}
+      <section className="relative overflow-hidden px-6 py-24 lg:px-10">
+        <div className="absolute inset-0">
+          <img src={bible} alt="" className="h-full w-full object-cover" loading="lazy" width={1400} height={1000} />
+          <div className="absolute inset-0 bg-primary/80" />
+        </div>
+        <div className="relative mx-auto max-w-3xl text-center text-white">
+          <p className="font-display text-3xl italic leading-snug md:text-4xl">
+            “I can do all things through Christ who strengthens me.”
+          </p>
+          <p className="mt-4 text-sm uppercase tracking-[0.25em] text-gold">— Philippians 4:13</p>
+        </div>
+      </section>
+    </>
   );
 }
