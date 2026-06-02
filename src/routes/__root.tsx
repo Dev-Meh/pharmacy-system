@@ -208,7 +208,7 @@ function Footer() {
             </div>
           </div>
           <p className="mt-4 text-sm text-primary-foreground/75">
-            “For where two or three are gathered in my name, there am I among them.” — Matthew 18:20
+            «Kwa maana walipo watu wawili au watatu wamekusanyika kwa jina langu, hapo mimi nipo, katikati yao.» — Mathayo 18:20
           </p>
         </div>
         <div>

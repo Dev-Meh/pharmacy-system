@@ -97,7 +97,7 @@ function HeroSlideshow() {
           Welcome to a Place of <span className="text-gold italic">Faith, Hope</span> and Worship
         </h1>
         <p className="mt-6 max-w-2xl animate-float-up text-base text-white/85 sm:text-lg" style={{ animationDelay: "0.3s" }}>
-          “Trust in the Lord with all your heart, and lean not on your own understanding;<br className="hidden md:block" /> in all your ways acknowledge Him, and He shall direct your paths.” — Proverbs 3:5–6
+          «Mtumaini Bwana kwa moyo wako wote, wala usitegemee ufahamu wako mwenyewe;<br className="hidden md:block" /> katika njia zako zote mkiri yeye, naye atayaposha mapito yako.» — Mithali 3:5–6
         </p>
         <div className="mt-10 flex animate-float-up flex-wrap items-center justify-center gap-3" style={{ animationDelay: "0.45s" }}>
           <Link to="/our-events" className="group inline-flex items-center gap-2 rounded-full bg-gradient-gold px-7 py-3.5 text-sm font-semibold text-primary shadow-warm transition hover:scale-[1.03]">
@@ -164,7 +164,7 @@ function Home() {
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-earth">Sundays at PHM-ARCC</p>
             <h2 className="mt-3 font-display text-4xl text-primary md:text-5xl">Come and worship with us.</h2>
             <p className="mt-5 text-muted-foreground">
-              From the rising of the sun to its going down, the name of the Lord is to be praised. Whether you are visiting Iyumbu or searching for a spiritual home, our doors — and our hearts — are open.
+              «Kutoka maandiko ya jua hata lichwe, jina la Bwana litukuzwe.» — Zaburi 113:3 Ikiwa unatembelea Iyumbu au unatafuta nyumba ya kiroho, milango yetu — na mioyo yetu — imefunguliwa.
             </p>
             <ul className="mt-6 space-y-3 text-sm">
               <li className="flex items-center gap-3"><span className="h-2 w-2 rounded-full bg-gold" /> Sunday Worship Service · 9:00 AM</li>
@@ -186,9 +186,9 @@ function Home() {
         </div>
         <div className="relative mx-auto max-w-3xl text-center text-white">
           <p className="font-display text-3xl italic leading-snug md:text-4xl">
-            “I can do all things through Christ who strengthens me.”
+            «Naweza kufanya mambo yote katika yeye anitiwe nguvu.»
           </p>
-          <p className="mt-4 text-sm uppercase tracking-[0.25em] text-gold">— Philippians 4:13</p>
+          <p className="mt-4 text-sm uppercase tracking-[0.25em] text-gold">— Wafilipi 4:13</p>
         </div>
       </section>
     </>
