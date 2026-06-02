@@ -5,11 +5,19 @@ import hero from "@/assets/worship-hero.jpg";
 import choir from "@/assets/choir.jpg";
 import bible from "@/assets/bible.jpg";
 import community from "@/assets/community.jpg";
+import outdoorWorship from "@/assets/outdoor-worship.jpg";
+import pastorPreaching from "@/assets/pastor-preaching.jpg";
+import prayerCircle from "@/assets/prayer-circle.jpg";
+import baptism from "@/assets/baptism.jpg";
 
 const HERO_IMAGES = [
   { src: hero, alt: "African congregation worshipping with raised hands inside a sunlit church" },
+  { src: outdoorWorship, alt: "Outdoor African worship gathering at golden hour with raised hands" },
   { src: choir, alt: "Joyful African church choir in traditional robes singing praises" },
+  { src: pastorPreaching, alt: "African pastor preaching passionately on stage to congregation" },
   { src: community, alt: "African church community gathered together in fellowship" },
+  { src: prayerCircle, alt: "African children and families praying together in a sunlit church" },
+  { src: baptism, alt: "Baptism ceremony at a river at golden hour surrounded by congregation" },
   { src: bible, alt: "Open Bible with warm golden light representing God's word" },
 ];
 
