@@ -92,7 +92,7 @@ function HeroSlideshow() {
           “Trust in the Lord with all your heart, and lean not on your own understanding;<br className="hidden md:block" /> in all your ways acknowledge Him, and He shall direct your paths.” — Proverbs 3:5–6
         </p>
         <div className="mt-10 flex animate-float-up flex-wrap items-center justify-center gap-3" style={{ animationDelay: "0.45s" }}>
-          <Link to="/events" className="group inline-flex items-center gap-2 rounded-full bg-gradient-gold px-7 py-3.5 text-sm font-semibold text-primary shadow-warm transition hover:scale-[1.03]">
+          <Link to="/our-events" className="group inline-flex items-center gap-2 rounded-full bg-gradient-gold px-7 py-3.5 text-sm font-semibold text-primary shadow-warm transition hover:scale-[1.03]">
             Join Us in Worship
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
@@ -163,7 +163,7 @@ function Home() {
               <li className="flex items-center gap-3"><span className="h-2 w-2 rounded-full bg-gold" /> Midweek Prayer · Wednesday 6:00 PM</li>
               <li className="flex items-center gap-3"><span className="h-2 w-2 rounded-full bg-gold" /> Youth Fellowship · Friday 5:00 PM</li>
             </ul>
-            <Link to="/events" className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90">
+            <Link to="/our-events" className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90">
               See all events <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

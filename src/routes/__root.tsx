@@ -9,10 +9,33 @@ import {
   useRouterState,
 } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { Menu, X, Music2, VolumeX } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 import appCss from "../styles.css?url";
+import churchLogo from "@/assets/church-logo.jpeg";
+import { MusicToggle } from "@/components/MusicToggle";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+
+function ChurchLogo({ className = "h-10 w-10" }: { className?: string }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) {
+    return (
+      <div className={`grid place-items-center rounded-full bg-gradient-gold text-primary shadow-soft ${className}`}>
+        <span className="font-display text-lg font-bold text-primary">✝</span>
+      </div>
+    );
+  }
+  return (
+    <img
+      src={churchLogo}
+      alt="PHM-ARCC Iyumbu Church logo"
+      className={`rounded-full object-contain bg-white/95 p-0.5 shadow-soft ${className}`}
+      width={40}
+      height={40}
+      onError={() => setFailed(true)}
+    />
+  );
+}
 
 function NotFoundComponent() {
   return (
@@ -89,9 +112,15 @@ function RootShell({ children }: { children: ReactNode }) {
 const NAV = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About" },
-  { to: "/events", label: "Events" },
+  { to: "/our-events", label: "Events" },
   { to: "/contact", label: "Contact" },
 ] as const;
+
+// Kiungo cha mfumo wa kanisa (Django).
+// Dev: weka VITE_LOGIN_URL=http://127.0.0.1:8000/ kwenye .env
+// Production (domain moja na Nginx): /members/login/ inatosha.
+const LOGIN_URL =
+  (import.meta.env.VITE_LOGIN_URL as string | undefined) || "/members/login/";
 
 function Header() {
   const [open, setOpen] = useState(false);
@@ -112,9 +141,7 @@ function Header() {
     <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${solid ? "bg-background/90 backdrop-blur-md shadow-soft" : "bg-transparent"}`}>
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-10">
         <Link to="/" className="flex items-center gap-3">
-          <div className="grid h-10 w-10 place-items-center rounded-full bg-gradient-gold text-primary-foreground shadow-soft">
-            <span className="font-display text-lg font-bold text-primary">✝</span>
-          </div>
+          <ChurchLogo className="h-11 w-11 shrink-0" />
           <div className={`leading-tight ${solid ? "text-foreground" : "text-white"}`}>
             <div className="font-display text-base font-bold">PHM-ARCC</div>
             <div className="text-[10px] uppercase tracking-[0.18em] opacity-80">Iyumbu Church</div>
@@ -133,7 +160,13 @@ function Header() {
               {n.label}
             </Link>
           ))}
-          <Link to="/contact" className="ml-3 rounded-full bg-gradient-gold px-5 py-2 text-sm font-semibold text-primary shadow-soft transition hover:brightness-105">
+          <a
+            href={LOGIN_URL}
+            className={`ml-3 rounded-full border px-5 py-2 text-sm font-semibold transition ${solid ? "border-primary/30 text-primary hover:bg-primary/5" : "border-white/40 text-white hover:bg-white/10"}`}
+          >
+            Login
+          </a>
+          <Link to="/contact" className="ml-2 rounded-full bg-gradient-gold px-5 py-2 text-sm font-semibold text-primary shadow-soft transition hover:brightness-105">
             Visit Us
           </Link>
         </nav>
@@ -151,6 +184,9 @@ function Header() {
                 {n.label}
               </Link>
             ))}
+            <a href={LOGIN_URL} className="mt-1 rounded-md bg-gradient-gold px-3 py-3 text-center text-sm font-semibold text-primary">
+              Login
+            </a>
           </nav>
         </div>
       )}
@@ -164,9 +200,7 @@ function Footer() {
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-14 md:grid-cols-3 lg:px-10">
         <div>
           <div className="flex items-center gap-3">
-            <div className="grid h-10 w-10 place-items-center rounded-full bg-gradient-gold">
-              <span className="font-display text-lg font-bold text-primary">✝</span>
-            </div>
+            <ChurchLogo className="h-11 w-11 shrink-0" />
             <div>
               <div className="font-display text-lg">PHM-ARCC Iyumbu</div>
               <div className="text-[11px] uppercase tracking-widest opacity-70">A place of faith</div>
@@ -178,9 +212,15 @@ function Footer() {
         </div>
         <div>
           <h4 className="font-display text-base text-gold">Visit</h4>
-          <p className="mt-3 text-sm text-primary-foreground/80">
-            Iyumbu Area, Dodoma<br/>Tanzania, East Africa
-          </p>
+          <a
+            href="https://www.google.com/maps/place/PENTECOSTAL+HOLINESS+MISSION+(ARCC-IYUMBU)/@-6.2070453,35.8403981,17.63z/data=!4m6!3m5!1s0x184dfd00040c3531:0x93c36d897a4603cb!8m2!3d-6.2069061!4d35.8399447!16s%2Fg%2F11xnw669yl"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-block text-sm text-primary-foreground/80 transition hover:text-gold"
+          >
+            PHM-ARCC, Iyumbu Area, Dodoma<br/>Tanzania, East Africa
+            <span className="mt-1 block text-xs text-gold">View on Google Maps →</span>
+          </a>
         </div>
         <div>
           <h4 className="font-display text-base text-gold">Worship Times</h4>
@@ -195,20 +235,6 @@ function Footer() {
         © {new Date().getFullYear()} PHM-ARCC Iyumbu Church. All rights reserved.
       </div>
     </footer>
-  );
-}
-
-function MusicToggle() {
-  const [on, setOn] = useState(false);
-  return (
-    <button
-      onClick={() => setOn((s) => !s)}
-      className="fixed bottom-5 right-5 z-40 grid h-12 w-12 place-items-center rounded-full bg-gradient-gold text-primary shadow-warm transition hover:scale-105"
-      aria-label={on ? "Mute background music" : "Play soft gospel music"}
-      title={on ? "Mute" : "Play soft gospel music"}
-    >
-      {on ? <Music2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
-    </button>
   );
 }
 

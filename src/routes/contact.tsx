@@ -14,6 +14,12 @@ export const Route = createFileRoute("/contact")({
   component: Contact,
 });
 
+// Exact church location on Google Maps.
+const MAPS_URL =
+  "https://www.google.com/maps/place/PENTECOSTAL+HOLINESS+MISSION+(ARCC-IYUMBU)/@-6.2070453,35.8403981,17.63z/data=!4m6!3m5!1s0x184dfd00040c3531:0x93c36d897a4603cb!8m2!3d-6.2069061!4d35.8399447!16s%2Fg%2F11xnw669yl";
+const MAPS_EMBED_URL =
+  "https://www.google.com/maps?q=-6.2069061,35.8399447&z=16&output=embed";
+
 function Contact() {
   const [sent, setSent] = useState(false);
   const onSubmit = (e: FormEvent) => { e.preventDefault(); setSent(true); };
@@ -36,18 +42,27 @@ function Contact() {
           {/* contact info */}
           <div className="md:col-span-2 space-y-4">
             {[
-              { icon: Phone, label: "Phone", value: "+255 712 345 678" },
-              { icon: Mail, label: "Email", value: "hello@phmarcc-iyumbu.org" },
-              { icon: MapPin, label: "Location", value: "Iyumbu Area, Dodoma, Tanzania" },
-            ].map(({ icon: Icon, label, value }) => (
-              <div key={label} className="flex items-start gap-4 rounded-2xl border border-border bg-card p-5 shadow-soft">
-                <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gradient-gold text-primary"><Icon className="h-5 w-5" /></div>
-                <div>
-                  <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</div>
-                  <div className="mt-0.5 text-foreground">{value}</div>
-                </div>
-              </div>
-            ))}
+              { icon: Phone, label: "Phone", value: "0625 953 702", href: "tel:+255625953702", external: false, hint: undefined as string | undefined },
+              { icon: Mail, label: "Email", value: "hello@phmarcc-iyumbu.org", href: undefined as string | undefined, external: false, hint: undefined as string | undefined },
+              { icon: MapPin, label: "Location", value: "PHM-ARCC, Iyumbu, Dodoma, Tanzania", href: MAPS_URL, external: true, hint: "Open in Google Maps →" },
+            ].map(({ icon: Icon, label, value, href, external, hint }) => {
+              const Wrapper = href ? "a" : "div";
+              return (
+                <Wrapper
+                  key={label}
+                  {...(href ? { href } : {})}
+                  {...(href && external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  className={`flex items-start gap-4 rounded-2xl border border-border bg-card p-5 shadow-soft ${href ? "transition hover:-translate-y-0.5 hover:shadow-warm" : ""}`}
+                >
+                  <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gradient-gold text-primary"><Icon className="h-5 w-5" /></div>
+                  <div>
+                    <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</div>
+                    <div className="mt-0.5 text-foreground">{value}</div>
+                    {hint && <div className="mt-0.5 text-xs font-medium text-earth">{hint}</div>}
+                  </div>
+                </Wrapper>
+              );
+            })}
           </div>
 
           {/* form */}
@@ -85,7 +100,7 @@ function Contact() {
         <div className="mx-auto max-w-6xl overflow-hidden rounded-3xl shadow-warm">
           <iframe
             title="PHM-ARCC Iyumbu Church location map"
-            src="https://www.google.com/maps?q=Iyumbu,Dodoma,Tanzania&output=embed"
+            src={MAPS_EMBED_URL}
             className="h-[420px] w-full border-0"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
