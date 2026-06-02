@@ -1,8 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, HeartHandshake, Sparkles, Users } from "lucide-react";
+import { useState, useEffect } from "react";
 import hero from "@/assets/worship-hero.jpg";
 import choir from "@/assets/choir.jpg";
 import bible from "@/assets/bible.jpg";
+import community from "@/assets/community.jpg";
+
+const HERO_IMAGES = [
+  { src: hero, alt: "African congregation worshipping with raised hands inside a sunlit church" },
+  { src: choir, alt: "Joyful African church choir in traditional robes singing praises" },
+  { src: community, alt: "African church community gathered together in fellowship" },
+  { src: bible, alt: "Open Bible with warm golden light representing God's word" },
+];
 
 export const Route = createFileRoute("/")({
   head: () => ({
