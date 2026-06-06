@@ -14,6 +14,7 @@ import { Menu, X } from "lucide-react";
 import appCss from "../styles.css?url";
 import churchLogo from "@/assets/church-logo.jpeg";
 import { MusicToggle } from "@/components/MusicToggle";
+import { WorshipScheduleList } from "@/components/WorshipScheduleList";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function ChurchLogo({ className = "h-10 w-10" }: { className?: string }) {
@@ -224,12 +225,11 @@ function Footer() {
           </a>
         </div>
         <div>
-          <h4 className="font-display text-base text-gold">Worship Times</h4>
-          <ul className="mt-3 space-y-1.5 text-sm text-primary-foreground/80">
-            <li>Sunday Service — 9:00 AM</li>
-            <li>Midweek Prayer — Wed 6:00 PM</li>
-            <li>Youth Fellowship — Fri 5:00 PM</li>
-          </ul>
+          <h4 className="font-display text-base text-gold">Ratiba za Ibada</h4>
+          <WorshipScheduleList
+            className="mt-3 space-y-1.5 text-sm text-primary-foreground/80"
+            itemClassName="flex items-start gap-2"
+          />
         </div>
       </div>
       <div className="border-t border-white/10 px-6 py-5 text-center text-xs text-primary-foreground/60 lg:px-10">

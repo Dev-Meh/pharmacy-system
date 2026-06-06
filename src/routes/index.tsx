@@ -1,12 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, HeartHandshake, Sparkles, Users } from "lucide-react";
 import { useState, useEffect } from "react";
+import { WorshipScheduleList } from "@/components/WorshipScheduleList";
 import hero from "@/assets/worship-hero.jpg";
-import choir from "@/assets/choir.jpg";
+import choir from "@/assets/choir.jpeg";
 import bible from "@/assets/bible.jpg";
 import community from "@/assets/community.jpg";
 import outdoorWorship from "@/assets/outdoor-worship.jpg";
-import pastorPreaching from "@/assets/pastor-preaching.jpg";
+import pastorPreaching from "@/assets/pastor-preaching.jpeg";
 import prayerCircle from "@/assets/prayer-circle.jpg";
 import baptism from "@/assets/baptism.jpg";
 
@@ -161,16 +162,12 @@ function Home() {
             <img src={choir} alt="Joyful African church choir in traditional robes" className="h-full w-full object-cover" loading="lazy" width={1400} height={1000} />
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-earth">Sundays at PHM-ARCC</p>
-            <h2 className="mt-3 font-display text-4xl text-primary md:text-5xl">Come and worship with us.</h2>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-earth">Ratiba za Ibada</p>
+            <h2 className="mt-3 font-display text-4xl text-primary md:text-5xl">Karibu ibadani nasi.</h2>
             <p className="mt-5 text-muted-foreground">
               «Kutoka maandiko ya jua hata lichwe, jina la Bwana litukuzwe.» — Zaburi 113:3 Ikiwa unatembelea Iyumbu au unatafuta nyumba ya kiroho, milango yetu — na mioyo yetu — imefunguliwa.
             </p>
-            <ul className="mt-6 space-y-3 text-sm">
-              <li className="flex items-center gap-3"><span className="h-2 w-2 rounded-full bg-gold" /> Sunday Worship Service · 9:00 AM</li>
-              <li className="flex items-center gap-3"><span className="h-2 w-2 rounded-full bg-gold" /> Midweek Prayer · Wednesday 6:00 PM</li>
-              <li className="flex items-center gap-3"><span className="h-2 w-2 rounded-full bg-gold" /> Youth Fellowship · Friday 5:00 PM</li>
-            </ul>
+            <WorshipScheduleList className="mt-6 space-y-3 text-sm" />
             <Link to="/our-events" className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90">
               See all events <ArrowRight className="h-4 w-4" />
             </Link>

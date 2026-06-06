@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { BookOpen, Cross, Globe2, Heart } from "lucide-react";
+import { WorshipScheduleList } from "@/components/WorshipScheduleList";
 import community from "@/assets/community.jpg";
-import choir from "@/assets/choir.jpg";
+import choir from "@/assets/choir.jpeg";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -70,6 +71,21 @@ function About() {
                 <p className="mt-1.5 text-sm text-muted-foreground">{body}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-secondary/40 px-6 py-20 lg:px-10">
+        <div className="mx-auto max-w-4xl">
+          <div className="text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-earth">Ratiba za Ibada</p>
+            <h2 className="mt-3 font-display text-4xl text-primary">Muda wetu wa ibada kila wiki</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
+              Jiunge nasi kwa ibada, mafundisho, maombi na mikutano ya idara.
+            </p>
+          </div>
+          <div className="mt-10 rounded-3xl border border-border bg-card p-8 shadow-soft">
+            <WorshipScheduleList className="space-y-4 text-base" itemClassName="flex items-start gap-3 border-b border-border pb-4 last:border-0 last:pb-0" />
           </div>
         </div>
       </section>

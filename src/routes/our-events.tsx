@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Calendar, Clock, MapPin } from "lucide-react";
 import { useEffect, useState } from "react";
+import { WORSHIP_SCHEDULE_EVENTS } from "@/lib/worship-schedule";
 
 export const Route = createFileRoute("/our-events")({
   head: () => ({
@@ -74,11 +75,10 @@ function toCard(ev: ApiEvent): EventCard {
 }
 
 // Shown before live data loads, and as a fallback if the system has no events yet.
-const FALLBACK_EVENTS: EventCard[] = [
-  { tag: "Worship", title: "Sunday Worship Service", date: "Every Sunday", time: "9:00 AM – 12:00 PM", place: "Main Sanctuary", desc: "Spirit-filled praise, prayer and Word-based teaching for the whole family." },
-  { tag: "Prayer", title: "Midweek Prayer Meeting", date: "Every Wednesday", time: "6:00 PM – 7:30 PM", place: "Prayer Hall", desc: "An intercessory gathering for the church, our community and the nation." },
-  { tag: "Youth", title: "Youth Fellowship Night", date: "Every Friday", time: "5:00 PM – 7:00 PM", place: "Youth Centre", desc: "Worship, mentorship and fellowship for teenagers and young adults." },
-];
+const FALLBACK_EVENTS: EventCard[] = WORSHIP_SCHEDULE_EVENTS.map((item) => ({
+  ...item,
+  desc: `${item.date} — ${item.title}. Karibu pamoja nasi.`,
+}));
 
 function Events() {
   const [events, setEvents] = useState<EventCard[]>(FALLBACK_EVENTS);
