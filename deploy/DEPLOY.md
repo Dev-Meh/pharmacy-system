@@ -1,4 +1,15 @@
-# Deploy PHM-ARCC (website + Django system)
+# Deploy MehMediCore Pharmacy
+
+Project layout:
+
+| App | Folder |
+|-----|--------|
+| Django API | `backend/` |
+| React UI | `frontend/` |
+
+---
+
+# Deploy PHM-ARCC (legacy — church website + Django)
 
 Two Git repos:
 
