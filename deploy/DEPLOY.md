@@ -1,15 +1,23 @@
 # Deploy MehMediCore Pharmacy
 
-Project layout:
-
 | App | Folder |
 |-----|--------|
 | Django API | `backend/` |
 | React UI | `frontend/` |
 
+**→ [Deploy on DigitalOcean](DIGITALOCEAN.md)** — full step-by-step guide (Droplet, Gunicorn, Nginx, PostgreSQL, HTTPS).
+
+Files:
+
+| File | Purpose |
+|------|---------|
+| `DIGITALOCEAN.md` | DigitalOcean deployment guide |
+| `nginx-mehmedicore.conf` | Nginx site config |
+| `gunicorn-mehmedicore.service` | systemd service for Gunicorn |
+
 ---
 
-# Deploy PHM-ARCC (legacy — church website + Django)
+# Legacy — PHM church website (separate project)
 
 Two Git repos:
 

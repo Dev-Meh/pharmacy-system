@@ -50,4 +50,4 @@ VITE_API_BASE=http://127.0.0.1:8000/api
 ## Docs
 
 - [Backend API](backend/README.md)
-- [Deploy](deploy/DEPLOY.md)
+- [Deploy on DigitalOcean](deploy/DIGITALOCEAN.md)

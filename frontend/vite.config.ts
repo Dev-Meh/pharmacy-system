@@ -20,10 +20,13 @@ export default defineConfig({
       { path: "/" },
       { path: "/auth" },
       { path: "/dashboard" },
+      { path: "/pharmacies" },
+      { path: "/branches" },
       { path: "/drugs" },
       { path: "/sales" },
       { path: "/users" },
       { path: "/profile" },
+      { path: "/stock-orders" },
     ],
   },
 });

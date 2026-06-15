@@ -1,0 +1,19 @@
+[Unit]
+Description=MehMediCore Pharmacy Gunicorn
+After=network.target postgresql.service
+
+[Service]
+User=CHANGE_ME
+Group=www-data
+WorkingDirectory=/home/CHANGE_ME/mehmedicore/backend
+EnvironmentFile=/home/CHANGE_ME/mehmedicore/backend/.env
+ExecStart=/home/CHANGE_ME/mehmedicore/.venv/bin/gunicorn \
+    --workers 3 \
+    --bind unix:/home/CHANGE_ME/mehmedicore/backend/gunicorn.sock \
+    --timeout 120 \
+    pharmacy_backend.wsgi:application
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
