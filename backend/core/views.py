@@ -80,6 +80,11 @@ User = get_user_model()
 PHARMACY_ACCESS = [IsAuthenticated, HasPharmacySystemAccess]
 
 
+def _perm(*classes):
+    """Instantiate permission classes for get_permissions() overrides."""
+    return [cls() for cls in classes]
+
+
 class _InventoryRow:
     def __init__(self, product, quantity):
         self.product = product
@@ -116,8 +121,8 @@ class ProductListCreateView(generics.ListCreateAPIView):
 
     def get_permissions(self):
         if self.request.method == "POST":
-            return [IsAuthenticated, HasPharmacySystemAccess, IsAdminOrStoreManager]
-        return PHARMACY_ACCESS
+            return _perm(IsAuthenticated, HasPharmacySystemAccess, IsAdminOrStoreManager)
+        return _perm(IsAuthenticated, HasPharmacySystemAccess)
 
     def perform_create(self, serializer):
         pharmacy = pharmacy_for_user(self.request.user)
@@ -136,8 +141,8 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_permissions(self):
         if self.request.method in ("PUT", "PATCH", "DELETE"):
-            return [IsAuthenticated, HasPharmacySystemAccess, IsAdminOrStoreManager]
-        return PHARMACY_ACCESS
+            return _perm(IsAuthenticated, HasPharmacySystemAccess, IsAdminOrStoreManager)
+        return _perm(IsAuthenticated, HasPharmacySystemAccess)
 
 
 class BranchInventoryListView(APIView):
@@ -443,9 +448,6 @@ class SaleListCreateView(generics.ListCreateAPIView):
             return qs
         return qs.filter(sold_by=user)
 
-    def get_permissions(self):
-        return PHARMACY_ACCESS
-
     def create(self, request, *args, **kwargs):
         if isinstance(request.data.get("items"), list):
             serializer = SaleBatchCreateSerializer(
@@ -600,9 +602,6 @@ class StockOrderListCreateView(generics.ListCreateAPIView):
         if user.is_superuser or user_is_store_manager(user):
             return qs
         return qs.filter(requested_by=user)
-
-    def get_permissions(self):
-        return PHARMACY_ACCESS
 
 
 class StockOrderDetailView(APIView):
