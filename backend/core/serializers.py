@@ -64,13 +64,15 @@ class AdminCreateUserSerializer(serializers.Serializer):
         profile = user.profile
         profile.full_name = full_name
         profile.username = username
-        profile.save(update_fields=["full_name", "username", "updated_at"])
+        pharmacy = pharmacy_for_user(self.context["request"].user)
+        if pharmacy:
+            profile.pharmacy = pharmacy
+        profile.save(update_fields=["full_name", "username", "pharmacy", "updated_at"])
 
         UserRole.objects.filter(user=user).delete()
         UserRole.objects.create(user=user, role=role)
 
         branch_id = validated_data.get("branch_id")
-        pharmacy = pharmacy_for_user(self.context["request"].user)
         if branch_id:
             try:
                 branch = Branch.objects.get(pk=branch_id, is_active=True)
@@ -148,15 +150,42 @@ class UserWithRolesSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source="user_id", read_only=True)
     email = serializers.EmailField(source="user.email", read_only=True)
     roles = serializers.SerializerMethodField()
+    branch_id = serializers.SerializerMethodField()
+    branch_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
-        fields = ["id", "full_name", "username", "email", "roles"]
+        fields = ["id", "full_name", "username", "email", "roles", "branch_id", "branch_name"]
 
     def get_roles(self, obj):
         return list(
             obj.user.role_assignments.values_list("role", flat=True)
         )
+
+    def _pharmacy_membership(self, obj):
+        request = self.context.get("request")
+        if not request:
+            return None
+        pharmacy = pharmacy_for_user(request.user)
+        if not pharmacy:
+            return None
+        return (
+            obj.user.branch_memberships.filter(
+                branch__pharmacy=pharmacy,
+                branch__is_active=True,
+                is_manager=False,
+            )
+            .select_related("branch")
+            .first()
+        )
+
+    def get_branch_id(self, obj):
+        membership = self._pharmacy_membership(obj)
+        return str(membership.branch_id) if membership else None
+
+    def get_branch_name(self, obj):
+        membership = self._pharmacy_membership(obj)
+        return membership.branch.name if membership else None
 
 
 class MeSerializer(serializers.Serializer):

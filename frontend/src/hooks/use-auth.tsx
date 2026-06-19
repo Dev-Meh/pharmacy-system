@@ -14,6 +14,16 @@ import {
 
 export type AppRole = "admin" | "pharmacist" | "store_manager";
 
+const ROLE_LABELS: Record<AppRole, string> = {
+  admin: "Admin",
+  pharmacist: "Pharmacist",
+  store_manager: "Manager",
+};
+
+export function formatRoleLabel(role: string): string {
+  return ROLE_LABELS[role as AppRole] ?? role.replace(/_/g, " ");
+}
+
 interface Profile {
   id: number;
   full_name: string;

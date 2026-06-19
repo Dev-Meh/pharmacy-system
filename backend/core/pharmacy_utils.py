@@ -1,3 +1,5 @@
+from django.db.models import Q
+
 from core.models import AppRole, Branch, Pharmacy, Profile
 from core.permissions import is_platform_admin, user_has_role
 
@@ -76,7 +78,10 @@ def profiles_for_pharmacy_manager(user):
         return Profile.objects.none()
     return (
         Profile.objects.select_related("user")
-        .prefetch_related("user__role_assignments")
-        .filter(user_id__in=user_ids_in_pharmacy(pharmacy))
+        .prefetch_related("user__role_assignments", "user__branch_memberships__branch")
+        .filter(
+            Q(user_id__in=user_ids_in_pharmacy(pharmacy)) | Q(pharmacy=pharmacy)
+        )
         .exclude(user__role_assignments__role=AppRole.ADMIN)
+        .distinct()
     )

@@ -88,12 +88,20 @@ function BranchesPage() {
   }, [selectedId, loadMembers]);
 
   useEffect(() => {
-    if (canManage && assignOpen) {
+    if (canManage) {
+      fetchUsers()
+        .then(setUsers)
+        .catch(() => toast.error("Failed to load pharmacists"));
+    }
+  }, [canManage]);
+
+  useEffect(() => {
+    if (canManage && assignOpen && users.length === 0) {
       fetchUsers()
         .then(setUsers)
         .catch(() => toast.error("Failed to load users"));
     }
-  }, [canManage, assignOpen]);
+  }, [canManage, assignOpen, users.length]);
 
   const saveBranch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -159,7 +167,10 @@ function BranchesPage() {
   }
 
   const selected = branches.find((b) => b.id === selectedId);
-  const pharmacistUsers = users.filter((u) => u.roles.includes("pharmacist"));
+  const assignedUserIds = new Set(members.filter((m) => !m.is_manager).map((m) => m.user_id));
+  const pharmacistUsers = users.filter(
+    (u) => u.roles.includes("pharmacist") && !assignedUserIds.has(u.id),
+  );
 
   return (
     <AppShell title="Branches">
@@ -255,11 +266,19 @@ function BranchesPage() {
                       <Select value={assignUserId} onValueChange={setAssignUserId}>
                         <SelectTrigger><SelectValue placeholder="Choose pharmacist" /></SelectTrigger>
                         <SelectContent>
-                          {pharmacistUsers.map((u) => (
-                            <SelectItem key={u.id} value={String(u.id)}>
-                              {u.full_name || u.email}
+                          {pharmacistUsers.length === 0 ? (
+                            <SelectItem value="__none" disabled>
+                              {users.some((u) => u.roles.includes("pharmacist"))
+                                ? "All pharmacists are already assigned here"
+                                : "No pharmacists — add staff first"}
                             </SelectItem>
-                          ))}
+                          ) : (
+                            pharmacistUsers.map((u) => (
+                              <SelectItem key={u.id} value={String(u.id)}>
+                                {u.full_name || u.email}
+                              </SelectItem>
+                            ))
+                          )}
                         </SelectContent>
                       </Select>
                     </Field>

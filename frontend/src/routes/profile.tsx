@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Loader2, UserCircle } from "lucide-react";
 import { toast } from "sonner";
 import { changePassword, updateProfile } from "@/lib/api/client";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth, formatRoleLabel } from "@/hooks/use-auth";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -75,7 +75,7 @@ function ProfilePage() {
     }
   };
 
-  const roleLabel = roles[0]?.replace("_", " ") ?? "staff";
+  const roleLabel = roles[0] ? formatRoleLabel(roles[0]) : "staff";
 
   return (
     <AppShell title="My profile">

@@ -2,10 +2,17 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Users as UsersIcon, ShieldCheck, Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { createUser, fetchUsers, setUserRole as apiSetUserRole } from "@/lib/api/client";
+import {
+  assignBranchMember,
+  createUser,
+  fetchBranches,
+  fetchUsers,
+  setUserRole as apiSetUserRole,
+  type Branch,
+} from "@/lib/api/client";
 import { cn } from "@/lib/utils";
 import { AppShell } from "@/components/AppShell";
-import { useAuth, type AppRole } from "@/hooks/use-auth";
+import { useAuth, type AppRole, formatRoleLabel } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,12 +38,14 @@ interface Row {
   username: string;
   email: string;
   roles: AppRole[];
+  branch_id: string | null;
+  branch_name: string | null;
 }
 
 const ROLE_OPTIONS: AppRole[] = ["pharmacist", "store_manager"];
 const CREATE_ROLE_OPTIONS: Array<{ value: "pharmacist" | "store_manager"; label: string }> = [
   { value: "pharmacist", label: "Pharmacist" },
-  { value: "store_manager", label: "Store manager" },
+  { value: "store_manager", label: "Manager" },
 ];
 
 const emptyForm = {
@@ -45,20 +54,23 @@ const emptyForm = {
   email: "",
   password: "",
   role: "pharmacist" as "pharmacist" | "store_manager",
+  branch_id: "",
 };
 
 function UsersPage() {
   const { hasRole, isPlatformAdmin, loading: authLoading, user } = useAuth();
   const navigate = useNavigate();
   const [rows, setRows] = useState<Row[]>([]);
+  const [branches, setBranches] = useState<Branch[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [assigningId, setAssigningId] = useState<number | null>(null);
   const [form, setForm] = useState(emptyForm);
 
   useEffect(() => {
     if (!authLoading && user && !hasRole("store_manager")) {
-      toast.error("Store managers only");
+      toast.error("Managers only");
       navigate({ to: "/dashboard" });
     }
   }, [authLoading, user, hasRole, navigate]);
@@ -66,7 +78,14 @@ function UsersPage() {
   const fetchUsersList = async () => {
     try {
       const data = await fetchUsers();
-      setRows(data.map((p) => ({ ...p, roles: p.roles as AppRole[] })));
+      setRows(
+        data.map((p) => ({
+          ...p,
+          roles: p.roles as AppRole[],
+          branch_id: p.branch_id ?? null,
+          branch_name: p.branch_name ?? null,
+        })),
+      );
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to load users");
     } finally {
@@ -74,7 +93,20 @@ function UsersPage() {
     }
   };
 
-  useEffect(() => { if (hasRole("store_manager") && !isPlatformAdmin) fetchUsersList(); }, [hasRole, isPlatformAdmin]);
+  const loadBranches = async () => {
+    try {
+      setBranches(await fetchBranches());
+    } catch {
+      toast.error("Failed to load branches");
+    }
+  };
+
+  useEffect(() => {
+    if (hasRole("store_manager") && !isPlatformAdmin) {
+      fetchUsersList();
+      loadBranches();
+    }
+  }, [hasRole, isPlatformAdmin]);
 
   const setUserRole = async (userId: number, newRole: AppRole) => {
     try {
@@ -83,6 +115,20 @@ function UsersPage() {
       fetchUsersList();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Update failed");
+    }
+  };
+
+  const assignBranch = async (userId: number, branchId: string) => {
+    if (!branchId) return;
+    setAssigningId(userId);
+    try {
+      await assignBranchMember(branchId, userId, false);
+      toast.success("Pharmacist assigned to branch");
+      fetchUsersList();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Assignment failed");
+    } finally {
+      setAssigningId(null);
     }
   };
 
@@ -96,6 +142,10 @@ function UsersPage() {
       toast.error("Password must be at least 6 characters");
       return;
     }
+    if (form.role === "pharmacist" && !form.branch_id) {
+      toast.error("Choose a branch for the pharmacist");
+      return;
+    }
     setSaving(true);
     try {
       await createUser({
@@ -104,6 +154,7 @@ function UsersPage() {
         email: form.email.trim(),
         password: form.password,
         role: form.role,
+        branch_id: form.role === "pharmacist" ? form.branch_id : undefined,
       });
       toast.success("User created");
       setDialogOpen(false);
@@ -130,7 +181,7 @@ function UsersPage() {
           <div>
             <div className="font-medium">Pharmacy staff</div>
             <div className="text-sm text-muted-foreground">
-              Create pharmacist accounts and assign roles for your pharmacy.
+              Create pharmacist accounts and assign them to a branch to work.
             </div>
           </div>
         </div>
@@ -159,7 +210,12 @@ function UsersPage() {
                 <Input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} minLength={6} required />
               </Field>
               <Field label="Role">
-                <Select value={form.role} onValueChange={(v) => setForm({ ...form, role: v as "pharmacist" | "store_manager" })}>
+                <Select
+                  value={form.role}
+                  onValueChange={(v) =>
+                    setForm({ ...form, role: v as "pharmacist" | "store_manager", branch_id: v === "store_manager" ? "" : form.branch_id })
+                  }
+                >
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {CREATE_ROLE_OPTIONS.map((r) => (
@@ -168,9 +224,25 @@ function UsersPage() {
                   </SelectContent>
                 </Select>
               </Field>
+              {form.role === "pharmacist" && (
+                <Field label="Branch *">
+                  <Select value={form.branch_id} onValueChange={(v) => setForm({ ...form, branch_id: v })}>
+                    <SelectTrigger><SelectValue placeholder="Choose branch" /></SelectTrigger>
+                    <SelectContent>
+                      {branches.length === 0 ? (
+                        <SelectItem value="__none" disabled>No branches — create one first</SelectItem>
+                      ) : (
+                        branches.map((b) => (
+                          <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>
+                        ))
+                      )}
+                    </SelectContent>
+                  </Select>
+                </Field>
+              )}
               <DialogFooter>
                 <Button type="button" variant="ghost" onClick={() => setDialogOpen(false)}>Cancel</Button>
-                <Button type="submit" disabled={saving} className="bg-gradient-primary">
+                <Button type="submit" disabled={saving || (form.role === "pharmacist" && !form.branch_id)} className="bg-gradient-primary">
                   {saving && <Loader2 className="h-4 w-4 animate-spin" />}
                   Create user
                 </Button>
@@ -188,45 +260,69 @@ function UsersPage() {
               <TableHead className={tableColHideMobile}>Username</TableHead>
               <TableHead className={tableColHideMobile}>Email</TableHead>
               <TableHead>Role</TableHead>
+              <TableHead>Branch</TableHead>
               <TableHead><span className="md:hidden">Set</span><span className="hidden md:inline">Change role</span></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
-              <TableRow><TableCell colSpan={5} className="py-12 text-center text-muted-foreground">Loading…</TableCell></TableRow>
+              <TableRow><TableCell colSpan={6} className="py-12 text-center text-muted-foreground">Loading…</TableCell></TableRow>
             ) : rows.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="py-12 text-center text-muted-foreground">
+                <TableCell colSpan={6} className="py-12 text-center text-muted-foreground">
                   <UsersIcon className="mx-auto h-8 w-8 opacity-40" />
                   <div className="mt-2 text-sm">No users yet.</div>
                 </TableCell>
               </TableRow>
-            ) : rows.map((r) => (
-              <TableRow key={r.id}>
-                <TableCell label="Name" className="font-medium">{r.full_name || "—"}</TableCell>
-                <TableCell label="Username" className={cn(tableColHideMobile, "text-muted-foreground")}>{r.username || "—"}</TableCell>
-                <TableCell label="Email" className={cn(tableColHideMobile, "text-muted-foreground")}>{r.email}</TableCell>
-                <TableCell label="Role">
-                  {r.roles.length === 0
-                    ? <Badge variant="outline">No role</Badge>
-                    : r.roles.map((role) => (
-                      <Badge key={role} className="mr-1" variant={role === "admin" ? "default" : "secondary"}>
-                        {role.replace("_", " ")}
-                      </Badge>
-                    ))}
-                </TableCell>
-                <TableCell label="Change role">
-                  <Select value={r.roles[0] ?? ""} onValueChange={(v) => setUserRole(r.id, v as AppRole)}>
-                    <SelectTrigger><SelectValue placeholder="Set role" /></SelectTrigger>
-                    <SelectContent>
-                      {ROLE_OPTIONS.map((role) => (
-                        <SelectItem key={role} value={role}>{role.replace("_", " ")}</SelectItem>
+            ) : rows.map((r) => {
+              const isPharmacist = r.roles.includes("pharmacist");
+              return (
+                <TableRow key={r.id}>
+                  <TableCell label="Name" className="font-medium">{r.full_name || "—"}</TableCell>
+                  <TableCell label="Username" className={cn(tableColHideMobile, "text-muted-foreground")}>{r.username || "—"}</TableCell>
+                  <TableCell label="Email" className={cn(tableColHideMobile, "text-muted-foreground")}>{r.email}</TableCell>
+                  <TableCell label="Role">
+                    {r.roles.length === 0
+                      ? <Badge variant="outline">No role</Badge>
+                      : r.roles.map((role) => (
+                        <Badge key={role} className="mr-1" variant={role === "admin" ? "default" : "secondary"}>
+                          {formatRoleLabel(role)}
+                        </Badge>
                       ))}
-                    </SelectContent>
-                  </Select>
-                </TableCell>
-              </TableRow>
-            ))}
+                  </TableCell>
+                  <TableCell label="Branch">
+                    {isPharmacist ? (
+                      <Select
+                        value={r.branch_id ?? ""}
+                        onValueChange={(v) => assignBranch(r.id, v)}
+                        disabled={assigningId === r.id || branches.length === 0}
+                      >
+                        <SelectTrigger className="min-w-[140px]">
+                          <SelectValue placeholder="Assign branch" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {branches.map((b) => (
+                            <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <span className="text-sm text-muted-foreground">{r.branch_name || "—"}</span>
+                    )}
+                  </TableCell>
+                  <TableCell label="Change role">
+                    <Select value={r.roles[0] ?? ""} onValueChange={(v) => setUserRole(r.id, v as AppRole)}>
+                      <SelectTrigger><SelectValue placeholder="Set role" /></SelectTrigger>
+                      <SelectContent>
+                        {ROLE_OPTIONS.map((role) => (
+                          <SelectItem key={role} value={role}>{formatRoleLabel(role)}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableCard>

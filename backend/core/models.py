@@ -7,7 +7,7 @@ from django.db import models
 class AppRole(models.TextChoices):
     ADMIN = "admin", "Admin"
     PHARMACIST = "pharmacist", "Pharmacist"
-    STORE_MANAGER = "store_manager", "Store Manager"
+    STORE_MANAGER = "store_manager", "Manager"
 
 
 class Profile(models.Model):
@@ -16,6 +16,13 @@ class Profile(models.Model):
         on_delete=models.CASCADE,
         related_name="profile",
         primary_key=True,
+    )
+    pharmacy = models.ForeignKey(
+        "Pharmacy",
+        on_delete=models.CASCADE,
+        related_name="staff_profiles",
+        null=True,
+        blank=True,
     )
     full_name = models.CharField(max_length=255, blank=True, default="")
     username = models.CharField(max_length=150, blank=True, default="")

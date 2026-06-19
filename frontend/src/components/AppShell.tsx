@@ -13,7 +13,7 @@ import {
   Building2,
   UserCircle,
 } from "lucide-react";
-import { useAuth, type AppRole } from "@/hooks/use-auth";
+import { useAuth, type AppRole, formatRoleLabel } from "@/hooks/use-auth";
 import { useBranch } from "@/hooks/use-branch";
 import { Button } from "@/components/ui/button";
 import {
@@ -137,7 +137,7 @@ export function AppShell({ children, title }: { children: ReactNode; title: stri
               {profile?.full_name || profile?.username || user.email}
             </Link>
             <div className="mt-0.5 text-[11px] uppercase tracking-wider text-sidebar-foreground/60">
-              {primaryRole.replace("_", " ")}
+              {formatRoleLabel(primaryRole === "administrator" ? "admin" : primaryRole)}
             </div>
           </div>
           <Button

@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableCard, tableColHideMobile } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { SimpleDatePicker } from "@/components/SimpleDatePicker";
 
 export const Route = createFileRoute("/drugs")({
   component: DrugsPage,
@@ -251,7 +252,12 @@ function DrugsPage() {
                       onChange={(e) => setForm({ ...form, price: digitsOnly(e.target.value) })}
                     />
                   </Field>
-                  <Field label="Expiry date"><Input type="date" value={form.expiry_date} onChange={(e) => setForm({ ...form, expiry_date: e.target.value })} /></Field>
+                  <Field label="Expiry date">
+                    <SimpleDatePicker
+                      value={form.expiry_date}
+                      onChange={(expiry_date) => setForm({ ...form, expiry_date })}
+                    />
+                  </Field>
                   <Field label="Supplier"><Input value={form.supplier} onChange={(e) => setForm({ ...form, supplier: e.target.value })} /></Field>
                 </div>
                 <DialogFooter>

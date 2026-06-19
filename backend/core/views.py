@@ -308,7 +308,7 @@ class UserListCreateView(generics.ListCreateAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         return Response(
-            UserWithRolesSerializer(user.profile).data,
+            UserWithRolesSerializer(user.profile, context={"request": request}).data,
             status=status.HTTP_201_CREATED,
         )
 
@@ -336,7 +336,7 @@ class SetUserRoleView(APIView):
         UserRole.objects.create(user=user, role=new_role)
 
         profile = user.profile
-        return Response(UserWithRolesSerializer(profile).data)
+        return Response(UserWithRolesSerializer(profile, context={"request": request}).data)
 
 
 class PharmacyListCreateView(generics.ListCreateAPIView):
@@ -745,6 +745,18 @@ class BranchMemberListCreateView(APIView):
             user = User.objects.get(pk=user_id)
         except User.DoesNotExist:
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        pharmacy = pharmacy_for_user(request.user)
+        if pharmacy and user.pk != pharmacy.manager_id:
+            in_pharmacy = (
+                getattr(user.profile, "pharmacy_id", None) == pharmacy.pk
+                or user.branch_memberships.filter(branch__pharmacy=pharmacy).exists()
+            )
+            if not in_pharmacy:
+                return Response(
+                    {"detail": "User is not staff in your pharmacy."},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
 
         if not is_manager and user_has_role(user, AppRole.PHARMACIST):
             BranchMembership.objects.filter(user=user, is_manager=False).exclude(

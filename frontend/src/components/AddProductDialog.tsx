@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { SimpleDatePicker } from "@/components/SimpleDatePicker";
 
 interface AddProductDialogProps {
   open: boolean;
@@ -95,7 +96,7 @@ export function AddProductDialog({ open, onOpenChange, onCreated }: AddProductDi
             />
           </Field>
           <Field label="Expiry date">
-            <Input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
+            <SimpleDatePicker value={expiryDate} onChange={setExpiryDate} />
           </Field>
           <p className="text-xs text-muted-foreground">
             This product is available at all branches. Pharmacists record imported quantity per branch.

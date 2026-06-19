@@ -253,6 +253,8 @@ export type UserRow = {
   username: string;
   email: string;
   roles: string[];
+  branch_id?: string | null;
+  branch_name?: string | null;
 };
 
 export type DashboardStats = {
